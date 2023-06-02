@@ -5,7 +5,16 @@ import faiss
 from langchain import OpenAI
 from langchain.chains import VectorDBQAWithSourcesChain
 import pickle
+from dotenv import load_dotenv
+import os
+import openai
+from langchain.callbacks import get_openai_callback
+import time
 
+## ENV ##
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+                           
 # Load the LangChain.
 index = faiss.read_index("docs.index")
 
@@ -34,12 +43,20 @@ def get_text():
 
 user_input = get_text()
 
+
 if user_input:
+    start_time = time.time()
     result = chain({"question": user_input})
+    with get_openai_callback() as cb:  # check openai sending
+        st.info('🧠 Processing the relevant documents with gpt...')
+        response = chain({"question": user_input})
     output = f"Answer: {result['answer']}\nSources: {result['sources']}"
 
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
+    with st.expander('💰 View the response token usage'):
+        st.code(cb)
+        st.text(f"Time taken: {time.time() - start_time} seconds")
 
 if st.session_state["generated"]:
 

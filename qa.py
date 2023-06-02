@@ -4,6 +4,14 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQAWithSourcesChain
 import pickle
 import argparse
+import openai
+from dotenv import load_dotenv
+import os
+
+## ENV ##
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+                           
 
 parser = argparse.ArgumentParser(description='Ask a question to the notion DB.')
 parser.add_argument('question', type=str, help='The question to ask the notion DB')

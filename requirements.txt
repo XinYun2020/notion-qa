@@ -4,3 +4,4 @@ faiss-cpu
 streamlit
 streamlit-chat
 tiktoken
+python-dotenv==1.0.0
